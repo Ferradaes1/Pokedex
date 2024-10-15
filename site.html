@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Pokédex</h1>
+      <div id="pokemon-info">
+        <p id="pokemon-number">#001</p>
+        <p id="pokemon-name">Bulbasaur</p>
+        <img
+          id="pokemon-image"
+          class="pokemon-image"
+          src=""
+          alt="Pokemon Image"
+        />
+      </div>
+      <div>
+        <button onclick="previousPokemon()">Previous</button>
+        <button onclick="nextPokemon()">Next</button>
+      </div>
+    </div>
+
+    <script>
+      let currentPokemonId = 1;
+
+      // Função para buscar os dados do Pokémon
+      function fetchPokemon(id) {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById('pokemon-number').textContent = `#${data.id
+              .toString()
+              .padStart(3, '0')}`;
+            document.getElementById('pokemon-name').textContent =
+              data.name.charAt(0).toUpperCase() + data.name.slice(1);
+            document.getElementById('pokemon-image').src =
+              data.sprites.front_default;
+          })
+          .catch((error) => {
+            console.error('Erro ao buscar Pokémon:', error);
+          });
+      }
+
+
+      function nextPokemon() {
+        if (currentPokemonId < 898) { // Limite para o total de Pokémon existentes na PokeAPI
+          currentPokemonId++;
+          fetchPokemon(currentPokemonId);
+        }
+      }
+
+      function previousPokemon() {
+        if (currentPokemonId > 1) {
+          currentPokemonId--;
+          fetchPokemon(currentPokemonId);
+        }
+      }
+
+      // Carregar o primeiro Pokémon quando a página é carregada
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchPokemon(currentPokemonId);
+      });
+    </script>
+  </body>
+</html>
